@@ -1,0 +1,11 @@
+{
+  "SSoTmeProjectId": "b3a1f7c2-5d84-4e0a-8c16-7e2f9a4d1b35",
+  "Name": "node-shopify",
+  "Description": "Shopify add-in: products, customers and orders copied into the rulebook's tables by a sync and by Shopify webhooks, with an admin panel. Nothing to transpile: the files are the seed.",
+  "ProjectSettings": [],
+  "ProjectTranspilers": [],
+  "ShowHidden": false,
+  "ShowAllFiles": false,
+  "CurrentPath": null,
+  "SSoTmeProjectFiles": null
+}

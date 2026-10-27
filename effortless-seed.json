@@ -1,0 +1,25 @@
+{
+  "seed": {
+    "id": "effortless-node-shopify",
+    "displayName": "Shopify Connector",
+    "tagline": "Your Shopify products, customers and orders in your rulebook, kept current by sync and webhooks.",
+    "description": "Adds a node-shopify/ folder to a project that has the Backend API add-in: ShopifyProducts, ShopifyCustomers and ShopifyOrders rulebook tables (with derived fields), a Node module for the generated Express API that signs in to Shopify (client credentials, OAuth install or a static token), copies the store's data in with incremental GraphQL syncs, verifies and applies Shopify webhooks including the three privacy ones, and keeps the access token in a private schema no signed-in person can read; plus an admin web component. One store per project. Zero runtime dependencies.",
+    "kind": "child",
+    "category": "api",
+    "stack": "Shopify Admin GraphQL, Postgres, Express, Web components",
+    "requiresInput": "A Shopify app (client id and secret from the Dev Dashboard) installed on your store",
+    "mountPath": "node-shopify",
+    "requires": "rulebook-backend",
+    "sortOrder": 250
+  },
+  "subSeeds": [],
+  "replacements": [
+    { "key": "shopifyDomain", "label": "Store", "description": "Your store's myshopify.com address, for example my-store.myshopify.com.", "default": "" },
+    { "key": "shopifyClientId", "label": "App client id", "description": "From your app's Settings in the Shopify Dev Dashboard. Public.", "default": "" },
+    { "key": "shopifyClientSecret", "label": "App client secret", "description": "From the same page. It signs in to Shopify and verifies webhooks, so it is kept as a secret and read from the environment at run time.", "secret": true, "valueType": "secret", "persist": true, "default": "" },
+    { "key": "shopifyAuthMode", "label": "How the app signs in", "description": "client_credentials for a store in your own Shopify organization, oauth when a merchant installs the app, token for a legacy custom-app token.", "valueType": "choice", "choices": ["client_credentials", "oauth", "token"], "default": "client_credentials" },
+    { "key": "shopifyScopes", "label": "Access scopes", "description": "Comma-separated. Orders older than 60 days also need read_all_orders.", "default": "read_products,read_customers,read_orders" },
+    { "key": "shopifyApiVersion", "label": "Admin API version", "description": "A Shopify API version, for example 2026-07.", "default": "2026-07" },
+    { "key": "shopifyAppUrl", "label": "Public app URL", "description": "The https address this app is served at: where Shopify sends webhooks and OAuth returns. Blank until published.", "default": "" }
+  ]
+}

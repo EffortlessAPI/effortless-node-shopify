@@ -1,0 +1,11 @@
+{
+  "shop": "$shopifyDomain$",
+  "clientId": "$shopifyClientId$",
+  "apiVersion": "$shopifyApiVersion$",
+  "authMode": "$shopifyAuthMode$",
+  "scopes": "$shopifyScopes$",
+  "appUrl": "$shopifyAppUrl$",
+  "adminRole": "admin",
+  "syncEveryMinutes": 0,
+  "pageSize": 100
+}

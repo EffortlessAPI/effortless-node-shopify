@@ -1,0 +1,14 @@
+{
+  "name": "effortless-node-shopify",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Effortless seed: Shopify products, customers and orders in your rulebook, kept current by sync and webhooks.",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 test/*.test.mjs"
+  },
+  "devDependencies": {
+    "express": "^4.22.3",
+    "pg": "^8.12.0"
+  }
+}

@@ -1,0 +1,295 @@
+{
+  "ShopifyCustomers": {
+    "Description": "Customers of the connected Shopify store, copied in by the effortless-node-shopify seed (a sync and Shopify webhooks keep them current). Shopify is the source of these rows: change them in Shopify.",
+    "schema": [
+      {
+        "name": "ShopifyCustomerId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Shopify's numeric customer id (the tail of gid://shopify/Customer/<id>)."
+      },
+      {
+        "name": "Email",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "The customer's email address, when they gave one."
+      },
+      {
+        "name": "FirstName",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Given name."
+      },
+      {
+        "name": "LastName",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Family name."
+      },
+      {
+        "name": "OrdersCount",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": false,
+        "Description": "How many orders Shopify counts for this customer."
+      },
+      {
+        "name": "TotalSpent",
+        "datatype": "number",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Lifetime amount spent, in the shop's currency."
+      },
+      {
+        "name": "CurrencyCode",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Currency of TotalSpent."
+      },
+      {
+        "name": "State",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Shopify's account state: DISABLED, INVITED, ENABLED or DECLINED."
+      },
+      {
+        "name": "ShopifyUpdatedAt",
+        "datatype": "datetime",
+        "type": "raw",
+        "nullable": true,
+        "Description": "When Shopify last changed this customer."
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "Display label for this customer.",
+        "formula": "={{Email}}"
+      },
+      {
+        "name": "IsRepeatCustomer",
+        "datatype": "boolean",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "True when the customer has ordered more than once.",
+        "formula": "={{OrdersCount}}>1"
+      },
+      {
+        "name": "CountOfShopifyOrders",
+        "datatype": "integer",
+        "type": "aggregation",
+        "nullable": true,
+        "Description": "Orders in this database placed by this customer (OrdersCount is Shopify's own count).",
+        "formula": "=COUNTIFS(ShopifyOrders!{{ShopifyCustomer}}, ShopifyCustomers!{{ShopifyCustomerId}})"
+      }
+    ],
+    "data": []
+  },
+  "ShopifyOrders": {
+    "Description": "Orders of the connected Shopify store, copied in by the effortless-node-shopify seed. Shopify is the source of these rows.",
+    "schema": [
+      {
+        "name": "ShopifyOrderId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Shopify's numeric order id (the tail of gid://shopify/Order/<id>)."
+      },
+      {
+        "name": "OrderName",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "The order number as the shop shows it, for example #1001."
+      },
+      {
+        "name": "ShopifyCustomer",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": true,
+        "Description": "The customer who placed the order. Empty for a guest checkout.",
+        "RelatedTo": "ShopifyCustomers"
+      },
+      {
+        "name": "Email",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "The email address on the order."
+      },
+      {
+        "name": "FinancialStatus",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Shopify's payment status: PAID, PENDING, REFUNDED and so on."
+      },
+      {
+        "name": "FulfillmentStatus",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Shopify's fulfillment status: FULFILLED, UNFULFILLED, PARTIALLY_FULFILLED and so on."
+      },
+      {
+        "name": "TotalPrice",
+        "datatype": "number",
+        "type": "raw",
+        "nullable": false,
+        "Description": "The order total in the shop's currency."
+      },
+      {
+        "name": "CurrencyCode",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Currency of TotalPrice."
+      },
+      {
+        "name": "ProcessedAt",
+        "datatype": "datetime",
+        "type": "raw",
+        "nullable": true,
+        "Description": "When the order was placed."
+      },
+      {
+        "name": "ShopifyUpdatedAt",
+        "datatype": "datetime",
+        "type": "raw",
+        "nullable": true,
+        "Description": "When Shopify last changed this order."
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "Display label for this order.",
+        "formula": "={{OrderName}}"
+      },
+      {
+        "name": "IsOpenForFulfillment",
+        "datatype": "boolean",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "True until Shopify says the order is FULFILLED.",
+        "formula": "={{FulfillmentStatus}}<>\"FULFILLED\""
+      },
+      {
+        "name": "CustomerIsRepeat",
+        "datatype": "boolean",
+        "type": "lookup",
+        "nullable": true,
+        "Description": "Whether the customer who placed this order is a repeat customer, looked up.",
+        "formula": "=INDEX(ShopifyCustomers!{{IsRepeatCustomer}}, MATCH({{ShopifyCustomer}}, ShopifyCustomers!{{ShopifyCustomerId}}, 0))"
+      }
+    ],
+    "data": []
+  },
+  "ShopifyProducts": {
+    "Description": "Products of the connected Shopify store, copied in by the effortless-node-shopify seed. Shopify is the source of these rows.",
+    "schema": [
+      {
+        "name": "ShopifyProductId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Shopify's numeric product id (the tail of gid://shopify/Product/<id>)."
+      },
+      {
+        "name": "Title",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "The product's title."
+      },
+      {
+        "name": "Handle",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "The product's URL handle."
+      },
+      {
+        "name": "Status",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "ACTIVE, DRAFT or ARCHIVED."
+      },
+      {
+        "name": "Vendor",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Who makes or supplies it."
+      },
+      {
+        "name": "ProductType",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "The shop's own product type."
+      },
+      {
+        "name": "TotalInventory",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Units in stock across all variants and locations."
+      },
+      {
+        "name": "PriceMin",
+        "datatype": "number",
+        "type": "raw",
+        "nullable": true,
+        "Description": "The lowest variant price."
+      },
+      {
+        "name": "PriceMax",
+        "datatype": "number",
+        "type": "raw",
+        "nullable": true,
+        "Description": "The highest variant price."
+      },
+      {
+        "name": "CurrencyCode",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Currency of the prices."
+      },
+      {
+        "name": "ShopifyUpdatedAt",
+        "datatype": "datetime",
+        "type": "raw",
+        "nullable": true,
+        "Description": "When Shopify last changed this product."
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "Display label for this product.",
+        "formula": "={{Title}}"
+      },
+      {
+        "name": "IsOnSale",
+        "datatype": "boolean",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "True when the product is ACTIVE.",
+        "formula": "={{Status}}=\"ACTIVE\""
+      }
+    ],
+    "data": []
+  }
+}
